@@ -28,6 +28,7 @@ type
     ActSimAutoConnection: TAction;
     RibGrpData2: TRibbonGroup;
     pnlMainPanel: TPanel;
+    WaterDataSet: TClientDataSet;
   private
     { Private declarations }
   public

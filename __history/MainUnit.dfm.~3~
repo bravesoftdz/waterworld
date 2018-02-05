@@ -32,7 +32,6 @@ object Form1: TForm1
         Caption = 'Data I/O'
         Page = RibbonPageDataAnalysis
       end>
-    TabIndex = 1
     DesignSize = (
       756
       143)
@@ -48,32 +47,6 @@ object Form1: TForm1
       Width = 48
       Height = 24
       ActionManager = RibbonActionManager
-    end
-    object RibbonPageSimAuto: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 755
-      Height = 93
-      Caption = 'SimAuto'
-      Index = 0
-      object RibbonGroup1: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 132
-        Height = 86
-        ActionManager = RibbonActionManager
-        Caption = 'RibbonGroup1'
-        GroupIndex = 0
-      end
-      object RibbonGroup2: TRibbonGroup
-        Left = 138
-        Top = 3
-        Width = 128
-        Height = 86
-        ActionManager = RibbonActionManager
-        Caption = 'RibbonGroup2'
-        GroupIndex = 1
-      end
     end
     object RibbonPageDataAnalysis: TRibbonPage
       Left = 0
@@ -101,20 +74,46 @@ object Form1: TForm1
         GroupIndex = 1
       end
     end
+    object RibbonPageSimAuto: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 755
+      Height = 93
+      Caption = 'SimAuto'
+      Index = 0
+      object RibbonGroup1: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 132
+        Height = 86
+        ActionManager = RibbonActionManager
+        Caption = 'RibbonGroup1'
+        GroupIndex = 0
+      end
+      object RibbonGroup2: TRibbonGroup
+        Left = 138
+        Top = 3
+        Width = 128
+        Height = 86
+        ActionManager = RibbonActionManager
+        Caption = 'RibbonGroup2'
+        GroupIndex = 1
+      end
+    end
   end
   object TabControl1: TTabControl
     Left = 0
     Top = 143
-    Width = 450
+    Width = 505
     Height = 480
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 505
+    ExplicitWidth = 466
   end
-  object pnlMainPanel: TPanel
-    Left = 450
+  object pnlMainForm: TPanel
+    Left = 505
     Top = 143
-    Width = 306
+    Width = 251
     Height = 480
     Align = alRight
     TabOrder = 2

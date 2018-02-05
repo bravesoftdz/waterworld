@@ -105,19 +105,10 @@ object Form1: TForm1
   object TabControl1: TTabControl
     Left = 0
     Top = 143
-    Width = 450
+    Width = 756
     Height = 480
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 505
-  end
-  object pnlMainPanel: TPanel
-    Left = 450
-    Top = 143
-    Width = 306
-    Height = 480
-    Align = alRight
-    TabOrder = 2
   end
   object RibbonActionManager: TActionManager
     ActionBars = <
@@ -140,8 +131,8 @@ object Form1: TForm1
         AutoSize = False
       end>
     Images = ImgListRibbonButtons
-    Left = 175
-    Top = 370
+    Left = 565
+    Top = 175
     StyleName = 'Ribbon - Luna'
     object ActSimAutoConnection: TAction
       Caption = 'Connect to SimAuto'
@@ -151,11 +142,11 @@ object Form1: TForm1
     end
   end
   object MainMenu1: TMainMenu
-    Left = 320
-    Top = 210
+    Left = 480
+    Top = 175
   end
   object ImgListRibbonButtons: TImageList
-    Left = 255
-    Top = 253
+    Left = 405
+    Top = 228
   end
 end
