@@ -7,8 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnCtrls, Vcl.Ribbon, Vcl.ToolWin,
   Vcl.ActnMan, Vcl.ActnMenus, Vcl.RibbonActnMenus, Vcl.RibbonLunaStyleActnCtrls,
   System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Grids, Vcl.Tabs, Vcl.ComCtrls,
-  Vcl.ImgList, pwrworld_TLB, SimAutoCmds, Vcl.ExtCtrls, Data.DB,
-  Datasnap.DBClient;
+  Vcl.ImgList, pwrworld_TLB, SimAutoCmds, Vcl.ExtCtrls;
 
 type
   TForm1 = class(TForm)
@@ -27,7 +26,7 @@ type
     ImgListRibbonButtons: TImageList;
     ActSimAutoConnection: TAction;
     RibGrpData2: TRibbonGroup;
-    pnlMainPanel: TPanel;
+    Panel1: TPanel;
   private
     { Private declarations }
   public

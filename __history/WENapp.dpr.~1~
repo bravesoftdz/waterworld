@@ -6,16 +6,14 @@ uses
   SimAutoCmds in 'SimAutoCmds.pas',
   FrmDataCompare in 'FrmDataCompare.pas' {Form2},
   Vcl.Themes,
-  Vcl.Styles,
-  EditDatabase in 'EditDatabase.pas' {frmDatabaseEdit};
+  Vcl.Styles;
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TForm1, MainForm);
   Application.CreateForm(TForm2, Form2);
-  Application.CreateForm(TfrmDatabaseEdit, frmDatabaseEdit);
   Application.Run;
 end.
