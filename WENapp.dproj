@@ -89,7 +89,6 @@
             <Form>Form1</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="SimAutoCmds.pas"/>
         <DCCReference Include="FrmDataCompare.pas">
             <Form>Form2</Form>
             <FormType>dfm</FormType>
