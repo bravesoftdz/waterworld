@@ -1,9 +1,9 @@
 object RawDataForm: TRawDataForm
   Left = 0
   Top = 0
-  Caption = 'RawDataForm'
-  ClientHeight = 500
-  ClientWidth = 845
+  Caption = 'Raw Case Data'
+  ClientHeight = 676
+  ClientWidth = 860
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,30 +12,187 @@ object RawDataForm: TRawDataForm
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlTop: TPanel
+    Left = 551
+    Top = 0
+    Width = 309
+    Height = 676
+    Align = alRight
+    TabOrder = 0
+    object lblCaseName: TLabel
+      Left = 30
+      Top = 30
+      Width = 106
+      Height = 19
+      Caption = 'lblCaseName'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object GrpBoxCaseInfo: TGroupBox
+      Left = 18
+      Top = 75
+      Width = 273
+      Height = 111
+      Caption = 'GrpBoxCaseInfo'
+      TabOrder = 0
+      object lblBuses: TLabel
+        Left = 20
+        Top = 25
+        Width = 38
+        Height = 13
+        Caption = 'lblBuses'
+      end
+      object lblGenerators: TLabel
+        Left = 20
+        Top = 55
+        Width = 64
+        Height = 13
+        Caption = 'lblGenerators'
+      end
+      object lblLoad: TLabel
+        Left = 20
+        Top = 85
+        Width = 33
+        Height = 13
+        Caption = 'lblLoad'
+      end
+    end
+    object GrpBoxWaterInfo: TGroupBox
+      Left = 18
+      Top = 500
+      Width = 273
+      Height = 86
+      Caption = 'GrpBoxWaterInfo'
+      TabOrder = 1
+      object lblEstWithdrawal: TLabel
+        Left = 20
+        Top = 25
+        Width = 79
+        Height = 13
+        Caption = 'lblEstWithdrawal'
+      end
+      object lblEstConsumption: TLabel
+        Left = 20
+        Top = 55
+        Width = 87
+        Height = 13
+        Caption = 'lblEstConsumption'
+      end
+    end
+    object GrpBoxGeneration: TGroupBox
+      Left = 18
+      Top = 210
+      Width = 273
+      Height = 146
+      Caption = 'GrpBoxGeneration'
+      TabOrder = 2
+      object lblWind: TLabel
+        Left = 20
+        Top = 115
+        Width = 34
+        Height = 13
+        Caption = 'lblWind'
+      end
+      object lblNuc: TLabel
+        Left = 20
+        Top = 85
+        Width = 28
+        Height = 13
+        Caption = 'lblNuc'
+      end
+      object lblCoal: TLabel
+        Left = 20
+        Top = 25
+        Width = 21
+        Height = 13
+        Caption = 'Coal'
+      end
+      object lblNGas: TLabel
+        Left = 20
+        Top = 55
+        Width = 35
+        Height = 13
+        Caption = 'lblNGas'
+      end
+    end
+    object GrpBoxCooling: TGroupBox
+      Left = 18
+      Top = 380
+      Width = 273
+      Height = 96
+      Caption = 'GrpBoxCooling'
+      TabOrder = 3
+      object lblOpenLoop: TLabel
+        Left = 20
+        Top = 30
+        Width = 59
+        Height = 13
+        Caption = 'lblOpenLoop'
+      end
+      object lblClosedLoop: TLabel
+        Left = 20
+        Top = 60
+        Width = 65
+        Height = 13
+        Caption = 'lblClosedLoop'
+      end
+    end
+  end
+  object pagectrlRawData: TPageControl
     Left = 0
     Top = 0
-    Width = 845
-    Height = 176
-    Align = alTop
-    TabOrder = 0
-  end
-  object pnlLeft: TPanel
-    Left = 0
-    Top = 176
-    Width = 421
-    Height = 324
-    Align = alLeft
-    TabOrder = 1
-  end
-  object pnlRight: TPanel
-    Left = 421
-    Top = 176
-    Width = 424
-    Height = 324
+    Width = 551
+    Height = 676
+    ActivePage = tabshBranches
     Align = alClient
-    TabOrder = 2
+    TabOrder = 1
+    object tabshBranches: TTabSheet
+      Caption = 'Branches'
+      object strgrdBranches: TStringGrid
+        Left = 0
+        Top = 0
+        Width = 543
+        Height = 648
+        Align = alClient
+        TabOrder = 0
+        ExplicitWidth = 541
+        ExplicitHeight = 651
+      end
+    end
+    object tabshGeneration: TTabSheet
+      Caption = 'Generators'
+      ImageIndex = 1
+      object strgrdGens: TStringGrid
+        Left = 0
+        Top = 0
+        Width = 543
+        Height = 648
+        Align = alClient
+        TabOrder = 0
+        ExplicitWidth = 541
+        ExplicitHeight = 646
+      end
+    end
+    object tabshCosts: TTabSheet
+      Caption = 'Costs'
+      ImageIndex = 2
+      object strgrdCosts: TStringGrid
+        Left = 0
+        Top = 0
+        Width = 543
+        Height = 648
+        Align = alClient
+        TabOrder = 0
+        ExplicitWidth = 541
+        ExplicitHeight = 645
+      end
+    end
   end
 end
