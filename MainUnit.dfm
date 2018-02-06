@@ -1,7 +1,7 @@
-object Form1: TForm1
+object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'MainForm'
   ClientHeight = 623
   ClientWidth = 756
   Color = clBtnFace
@@ -12,6 +12,8 @@ object Form1: TForm1
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -33,6 +35,7 @@ object Form1: TForm1
         Caption = 'Data I/O'
         Page = RibbonPageDataAnalysis
       end>
+    TabIndex = 1
     DesignSize = (
       756
       143)
@@ -49,32 +52,6 @@ object Form1: TForm1
       Height = 24
       ActionManager = RibbonActionManager
     end
-    object RibbonPageDataAnalysis: TRibbonPage
-      Left = 0
-      Top = 50
-      Width = 755
-      Height = 93
-      Caption = 'Data I/O'
-      Index = 1
-      object RibGrpData1: TRibbonGroup
-        Left = 4
-        Top = 3
-        Width = 113
-        Height = 86
-        ActionManager = RibbonActionManager
-        Caption = 'Data Edit'
-        GroupIndex = 0
-      end
-      object RibGrpData2: TRibbonGroup
-        Left = 119
-        Top = 3
-        Width = 100
-        Height = 86
-        ActionManager = RibbonActionManager
-        Caption = 'RibGrpData2'
-        GroupIndex = 1
-      end
-    end
     object RibbonPageSimAuto: TRibbonPage
       Left = 0
       Top = 50
@@ -85,20 +62,55 @@ object Form1: TForm1
       object RibbonGrpConnection: TRibbonGroup
         Left = 4
         Top = 3
-        Width = 69
+        Width = 120
         Height = 86
         ActionManager = RibbonActionManager
         Caption = 'Connection'
         GroupIndex = 0
         Rows = 2
       end
-      object RibbonGroupSimAutoCase: TRibbonGroup
-        Left = 75
+      object RibbonGrpCase: TRibbonGroup
+        Left = 126
         Top = 3
-        Width = 75
+        Width = 56
         Height = 86
         ActionManager = RibbonActionManager
-        Caption = 'RibbonGroupSimAutoCase'
+        Caption = 'OpenCase'
+        GroupIndex = 1
+      end
+      object RibbonGroupData: TRibbonGroup
+        Left = 184
+        Top = 3
+        Width = 68
+        Height = 86
+        ActionManager = RibbonActionManager
+        Caption = 'RibbonGroupData'
+        GroupIndex = 2
+      end
+    end
+    object RibbonPageDataAnalysis: TRibbonPage
+      Left = 0
+      Top = 50
+      Width = 755
+      Height = 93
+      Caption = 'Data I/O'
+      Index = 1
+      object RibGrpData1: TRibbonGroup
+        Left = 4
+        Top = 3
+        Width = 76
+        Height = 86
+        ActionManager = RibbonActionManager
+        Caption = 'Data Edit'
+        GroupIndex = 0
+      end
+      object RibGrpData2: TRibbonGroup
+        Left = 82
+        Top = 3
+        Width = 68
+        Height = 86
+        ActionManager = RibbonActionManager
+        Caption = 'RibGrpData2'
         GroupIndex = 1
       end
     end
@@ -110,7 +122,6 @@ object Form1: TForm1
     Height = 480
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 526
   end
   object pnlMainPanel: TPanel
     Left = 510
@@ -119,6 +130,13 @@ object Form1: TForm1
     Height = 480
     Align = alRight
     TabOrder = 2
+    object lblFileName: TLabel
+      Left = 20
+      Top = 10
+      Width = 92
+      Height = 13
+      Caption = 'Browse for a File...'
+    end
   end
   object RibbonActionManager: TActionManager
     ActionBars = <
@@ -145,10 +163,12 @@ object Form1: TForm1
           item
             Action = ActionSimAutoConnect
             Caption = '&Connect'
+            CommandProperties.ButtonSize = bsLarge
           end
           item
             Action = ActionSimAutoDisconnect
             Caption = '&Disconnect'
+            CommandProperties.ButtonSize = bsLarge
           end>
         ActionBar = RibbonGrpConnection
       end
@@ -156,21 +176,55 @@ object Form1: TForm1
         Items = <
           item
             Action = BrowseForFolder
+            Caption = '&Browse...'
           end
           item
             Action = ActionOpenSimAutoCase
             ImageIndex = 0
             ShortCut = 16463
           end>
-        ActionBar = RibbonGroupSimAutoCase
+      end
+      item
+        Items = <
+          item
+            Action = ActionOpenSimAutoCase
+            ImageIndex = 0
+            ShortCut = 16463
+            CommandProperties.ButtonSize = bsLarge
+          end>
+        ActionBar = RibbonGrpCase
+      end
+      item
+        Items = <
+          item
+            Action = ActionRawData
+            Caption = '&View Raw Case Data'
+            CommandProperties.ButtonSize = bsLarge
+          end>
+        ActionBar = RibbonGroupData
+      end
+      item
+        Items = <
+          item
+            Action = ActionEditDatabase
+            Caption = '&Edit Database...'
+            CommandProperties.ButtonSize = bsLarge
+          end>
+        ActionBar = RibGrpData1
+      end
+      item
+        Items = <
+          item
+            Action = ActionRawData
+            Caption = '&View Raw Case Data'
+            CommandProperties.ButtonSize = bsLarge
+          end>
+        ActionBar = RibGrpData2
       end>
     Images = ImgListRibbonButtons
-    Left = 175
-    Top = 370
+    Left = 140
+    Top = 285
     StyleName = 'Ribbon - Luna'
-    object ActionCompareData: TAction
-      Caption = 'Compare Data'
-    end
     object ActionSimAutoConnect: TAction
       Caption = 'Connect'
       OnExecute = ActionSimAutoConnectExecute
@@ -185,13 +239,21 @@ object Form1: TForm1
       Hint = 'Open|Opens an existing file'
       ImageIndex = 0
       ShortCut = 16463
+      OnAccept = ActionOpenSimAutoCaseAccept
     end
     object BrowseForFolder: TBrowseForFolder
       Category = 'File'
       Caption = 'Browse...'
       DialogCaption = 'Browse...'
       BrowseOptions = []
-      BeforeExecute = BrowseForFolderBeforeExecute
+    end
+    object ActionRawData: TAction
+      Caption = 'View Raw Case Data'
+      OnExecute = ActionRawDataExecute
+    end
+    object ActionEditDatabase: TAction
+      Caption = 'Edit Database...'
+      OnExecute = ActionEditDatabaseExecute
     end
   end
   object MainMenu1: TMainMenu
@@ -202,7 +264,7 @@ object Form1: TForm1
     Left = 255
     Top = 253
     Bitmap = {
-      494C010101000800080010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010101000800240010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -338,6 +400,7 @@ object Form1: TForm1
       001F000000000000000F00000000000000070000000000000003000000000000
       00010000000000000000000000000000001F000000000000001F000000000000
       001F0000000000008FF1000000000000FFF9000000000000FF75000000000000
-      FF8F000000000000FFFF000000000000}
+      FF8F000000000000FFFF00000000000000000000000000000000000000000000
+      000000000000}
   end
 end

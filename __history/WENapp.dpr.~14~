@@ -1,0 +1,18 @@
+program WENapp;
+
+uses
+  Vcl.Forms,
+  MainUnit in 'MainUnit.pas' {frmMain},
+  RawDataView in 'RawDataView.pas' {RawDataForm},
+  Vcl.Themes,
+  Vcl.Styles,
+  EditDatabase in 'EditDatabase.pas' {frmDatabaseEdit};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmMain, frmMain);
+  Application.Run;
+end.

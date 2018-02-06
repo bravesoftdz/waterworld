@@ -1,4 +1,4 @@
-object frmDatabaseEdit: TfrmDatabaseEdit
+object frmDatabase: TfrmDatabase
   Left = 0
   Top = 0
   Caption = 'Edit Stored Water Data'
@@ -11,6 +11,7 @@ object frmDatabaseEdit: TfrmDatabaseEdit
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
