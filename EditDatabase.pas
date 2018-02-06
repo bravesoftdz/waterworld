@@ -8,13 +8,14 @@ uses
   Datasnap.DBClient;
 
 type
-  TfrmDatabaseEdit = class(TForm)
+  TfrmDatabase = class(TForm)
     DBGrid1: TDBGrid;
     DBGrid3: TDBGrid;
     ClientDataSet1: TClientDataSet;
     ClientDataSet1Date: TDateField;
     ClientDataSet1TemperatureC: TIntegerField;
     ClientDataSet1Streamflow: TFloatField;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -22,10 +23,15 @@ type
   end;
 
 var
-  frmDatabaseEdit: TfrmDatabaseEdit;
+  frmDatabase: TfrmDatabase;
 
 implementation
 
 {$R *.dfm}
+
+procedure TfrmDatabase.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
 
 end.

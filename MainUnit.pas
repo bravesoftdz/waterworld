@@ -4,14 +4,16 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnCtrls, Vcl.Ribbon, Vcl.ToolWin,
+  System.UITypes, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnCtrls, Vcl.Ribbon, Vcl.ToolWin,
   Vcl.ActnMan, Vcl.ActnMenus, Vcl.RibbonActnMenus, Vcl.RibbonLunaStyleActnCtrls,
   System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Grids, Vcl.Tabs, Vcl.ComCtrls,
   Vcl.ImgList, pwrworld_TLB, SimAutoCmds, Vcl.ExtCtrls, Data.DB,
-  Datasnap.DBClient, Vcl.StdActns;
+  Datasnap.DBClient, Vcl.StdActns, Vcl.StdCtrls,
+  // Custom Units
+  RawDataView, EditDatabase;
 
 type
-  TForm1 = class(TForm)
+  TMainForm = class(TForm)
     RibbonActionManager: TActionManager;
     Ribbon1: TRibbon;
     RibbonApplicationMenuBar1: TRibbonApplicationMenuBar;
@@ -20,10 +22,8 @@ type
     RibbonGrpConnection: TRibbonGroup;
     RibbonPageDataAnalysis: TRibbonPage;
     MainMenu1: TMainMenu;
-    RibbonGroupSimAutoCase: TRibbonGroup;
     TabControl1: TTabControl;
     RibGrpData1: TRibbonGroup;
-    ActionCompareData: TAction;
     ImgListRibbonButtons: TImageList;
     RibGrpData2: TRibbonGroup;
     pnlMainPanel: TPanel;
@@ -31,12 +31,21 @@ type
     ActionSimAutoDisconnect: TAction;
     ActionOpenSimAutoCase: TFileOpen;
     BrowseForFolder: TBrowseForFolder;
+    RibbonGrpCase: TRibbonGroup;
+    lblFileName: TLabel;
+    RibbonGroupData: TRibbonGroup;
+    ActionRawData: TAction;
+    ActionEditDatabase: TAction;
     procedure EnableActions;
     procedure DisableActions;
     procedure FormCreate(Sender: TObject);
     procedure ActionSimAutoConnectExecute(Sender: TObject);
     procedure ActionSimAutoDisconnectExecute(Sender: TObject);
-    procedure BrowseForFolderBeforeExecute(Sender: TObject);
+    procedure ActionOpenSimAutoCaseAccept(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ActionEditDatabaseExecute(Sender: TObject);
+    procedure ActionRawDataExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -44,7 +53,8 @@ type
   end;
 
 var
-  MainForm: TForm1;
+  MainForm: TMainForm;
+  Output: System.OleVariant;
   SimAuto: ISimulatorAuto;
   CurrCasePath: string;
 
@@ -57,19 +67,36 @@ implementation
 { ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                            Form Initialization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }
-procedure TForm1.EnableActions;
+procedure TMainForm.EnableActions;
 begin
+  ActionSimAutoConnect.Enabled := False;
   ActionSimAutoDisconnect.Enabled := True;
   ActionOpenSimAutoCase.Enabled := True;
+  ActionRawData.Enabled := True;
+  ActionEditDatabase.Enabled := True;
 end;
 
-procedure TForm1.DisableActions;
+procedure TMainForm.DisableActions;
 begin
+  ActionSimAutoConnect.Enabled := True;
   ActionSimAutoDisconnect.Enabled := False;
   ActionOpenSimAutoCase.Enabled := False;
+  ActionRawData.Enabled := False;
+  ActionEditDatabase.Enabled := False;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  SimAutoDisconnect(SimAuto);
+  Action := caFree;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if MessageDlg('Exit WaterWorld?', mtConfirmation, [mbOk, mbCancel], 0) = mrCancel then CanClose := False;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
   SimAuto := nil;
   // Disable all actions (since a case isn't open)
@@ -113,18 +140,47 @@ end;
                 Functions relating to the SimAutoConnection ribbon group
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }
 
-procedure TForm1.ActionSimAutoConnectExecute(Sender: TObject);
+procedure TMainForm.ActionEditDatabaseExecute(Sender: TObject);
+var
+  DatabaseForm: TfrmDatabase;
+begin
+  DatabaseForm := TfrmDatabase.Create(Application);
+  DatabaseForm.Show;
+end;
+
+procedure TMainForm.ActionRawDataExecute(Sender: TObject);
+var
+  DatabaseForm: TRawDataForm;
+begin
+  DatabaseForm := TRawDataForm.Create(Application);
+  DatabaseForm.Show;
+end;
+
+procedure TMainForm.ActionOpenSimAutoCaseAccept(Sender: TObject);
+begin
+  // Grab the case name and display it
+  CurrCasePath := ActionOpenSimAutoCase.Dialog.FileName;
+  lblFileName.Caption := ExtractFileName(CurrCasePath);
+  // Open the desired SimAuto Case
+  Output := SimAuto.OpenCase(CurrCasePath);
+  if (string(Output[0]) <> '') then
+    ShowMessage('Error '+string(Output[0]))
+  else begin
+    ShowMessage('Case "'+ExtractFileName(CurrCasePath)+'"  opened.');
+  end;
+end;
+
+procedure TMainForm.ActionSimAutoConnectExecute(Sender: TObject);
 begin
   SimAuto := SimAutoConnect;
   if SimAuto <> nil then begin
     // If succesfully connected, enable the disconnect button and
     // disable the connect button
-    ActionSimAutoConnect.Enabled := False;
-    ActionSimAutoDisconnect.Enabled := True;
+    EnableActions;
   end;
 end;
 
-procedure TForm1.ActionSimAutoDisconnectExecute(Sender: TObject);
+procedure TMainForm.ActionSimAutoDisconnectExecute(Sender: TObject);
 var
   Output: OleVariant;
 begin
@@ -133,25 +189,8 @@ begin
     ShowMessage(string(Output[0]))
   else begin
     SimAutoDisconnect(SimAuto);
-    // Disable the disconnect button and enable the connect button
-    ActionSimAutoConnect.Enabled := True;
-    ActionSimAutoDisconnect.Enabled := False;
-  end;
-end;
-
-procedure TForm1.BrowseForFolderBeforeExecute(Sender: TObject);
-var
-  selectedFile   : string;
-begin
-  if PromptForFileName(selectedFile,
-                'Case files (*.pwb)|*.pwb',
-                '', 'Select a PowerWorld case',
-                'C:\', False)  // False = NOT a 'Save' dialog
-  then begin
-    btnOpenCase.Enabled := True;
-    lblCasePath.Caption := ExtractFilePath(selectedFile);
-    lblFileName.Caption := ExtractFileName(selectedFile);
-    CurrCasePath := selectedFile;
+    // Disable all relevant actions (reset the app)
+    DisableActions;
   end;
 end;
 

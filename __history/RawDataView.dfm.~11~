@@ -1,0 +1,118 @@
+object RawDataForm: TRawDataForm
+  Left = 0
+  Top = 0
+  Caption = 'RawDataForm'
+  ClientHeight = 676
+  ClientWidth = 860
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object pnlTop: TPanel
+    Left = 551
+    Top = 0
+    Width = 309
+    Height = 676
+    Align = alClient
+    TabOrder = 0
+    ExplicitLeft = 400
+    ExplicitWidth = 596
+    ExplicitHeight = 655
+    object lblCaseName: TLabel
+      Left = 30
+      Top = 30
+      Width = 106
+      Height = 19
+      Caption = 'lblCaseName'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object GrpBoxCaseInfo: TGroupBox
+      Left = 18
+      Top = 75
+      Width = 273
+      Height = 111
+      Caption = 'GrpBoxCaseInfo'
+      TabOrder = 0
+      object lblBuses: TLabel
+        Left = 20
+        Top = 25
+        Width = 38
+        Height = 13
+        Caption = 'lblBuses'
+      end
+      object lblGenerators: TLabel
+        Left = 20
+        Top = 55
+        Width = 64
+        Height = 13
+        Caption = 'lblGenerators'
+      end
+      object lblLoad: TLabel
+        Left = 20
+        Top = 85
+        Width = 33
+        Height = 13
+        Caption = 'lblLoad'
+      end
+    end
+    object GrpBoxWaterInfo: TGroupBox
+      Left = 18
+      Top = 210
+      Width = 273
+      Height = 86
+      Caption = 'GrpBoxWaterInfo'
+      TabOrder = 1
+      object lblEstWithdrawal: TLabel
+        Left = 20
+        Top = 25
+        Width = 79
+        Height = 13
+        Caption = 'lblEstWithdrawal'
+      end
+      object lblEstConsumption: TLabel
+        Left = 20
+        Top = 55
+        Width = 87
+        Height = 13
+        Caption = 'lblEstConsumption'
+      end
+    end
+    object GrpBoxGeneration: TGroupBox
+      Left = 18
+      Top = 325
+      Width = 273
+      Height = 146
+      Caption = 'GrpBoxGeneration'
+      TabOrder = 2
+    end
+    object GrpBoxCooling: TGroupBox
+      Left = 18
+      Top = 510
+      Width = 273
+      Height = 141
+      Caption = 'GrpBoxCooling'
+      TabOrder = 3
+    end
+  end
+  object TabControl1: TTabControl
+    Left = 0
+    Top = 0
+    Width = 551
+    Height = 676
+    Align = alLeft
+    TabOrder = 1
+    ExplicitHeight = 655
+  end
+end

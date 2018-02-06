@@ -1,0 +1,201 @@
+unit MainUnit;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  System.UITypes, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnCtrls, Vcl.Ribbon, Vcl.ToolWin,
+  Vcl.ActnMan, Vcl.ActnMenus, Vcl.RibbonActnMenus, Vcl.RibbonLunaStyleActnCtrls,
+  System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Grids, Vcl.Tabs, Vcl.ComCtrls,
+  Vcl.ImgList, pwrworld_TLB, SimAutoCmds, Vcl.ExtCtrls, Data.DB,
+  Datasnap.DBClient, Vcl.StdActns, Vcl.StdCtrls,
+  // Custom Units
+  RawDataView, EditDatabase;
+
+type
+  TMainForm = class(TForm)
+    RibbonActionManager: TActionManager;
+    Ribbon1: TRibbon;
+    RibbonApplicationMenuBar1: TRibbonApplicationMenuBar;
+    RibbonPageSimAuto: TRibbonPage;
+    RibbonQuickAccessToolbar1: TRibbonQuickAccessToolbar;
+    RibbonGrpConnection: TRibbonGroup;
+    RibbonPageDataAnalysis: TRibbonPage;
+    MainMenu1: TMainMenu;
+    TabControl1: TTabControl;
+    RibGrpData1: TRibbonGroup;
+    ImgListRibbonButtons: TImageList;
+    RibGrpData2: TRibbonGroup;
+    pnlMainPanel: TPanel;
+    ActionSimAutoConnect: TAction;
+    ActionSimAutoDisconnect: TAction;
+    ActionOpenSimAutoCase: TFileOpen;
+    BrowseForFolder: TBrowseForFolder;
+    RibbonGrpCase: TRibbonGroup;
+    lblFileName: TLabel;
+    RibbonGroupData: TRibbonGroup;
+    ActionRawData: TAction;
+    ActionEditDatabase: TAction;
+    procedure EnableActions;
+    procedure DisableActions;
+    procedure FormCreate(Sender: TObject);
+    procedure ActionSimAutoConnectExecute(Sender: TObject);
+    procedure ActionSimAutoDisconnectExecute(Sender: TObject);
+    procedure ActionOpenSimAutoCaseAccept(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ActionEditDatabaseExecute(Sender: TObject);
+    procedure ActionRawDataExecute(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  MainForm: TMainForm;
+  Output: System.OleVariant;
+  SimAuto: ISimulatorAuto;
+  CurrCasePath: string;
+
+function SimAutoConnect: ISimulatorAuto;
+procedure SimAutoDisconnect(SimAutoObj: ISimulatorAuto);
+
+implementation
+
+{$R *.dfm}
+{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                           Form Initialization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }
+procedure TMainForm.EnableActions;
+begin
+  ActionSimAutoConnect.Enabled := False;
+  ActionSimAutoDisconnect.Enabled := True;
+  ActionOpenSimAutoCase.Enabled := True;
+  ActionRawData.Enabled := True;
+  ActionEditDatabase.Enabled := True;
+end;
+
+procedure TMainForm.DisableActions;
+begin
+  ActionSimAutoConnect.Enabled := True;
+  ActionSimAutoDisconnect.Enabled := False;
+  ActionOpenSimAutoCase.Enabled := False;
+  ActionRawData.Enabled := False;
+  ActionEditDatabase.Enabled := False;
+end;
+
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  SimAutoDisconnect(SimAuto);
+  Action := caFree;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if MessageDlg('Exit WENapp?', mtConfirmation, [mbOk, mbCancel], 0) = mrCancel then CanClose := False;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  SimAuto := nil;
+  // Disable all actions (since a case isn't open)
+  DisableActions;
+
+  // Ribbon Group Editing
+
+  // This FileOpen object should only open pwb cases
+  ActionOpenSimAutoCase.Dialog.Filter := 'PowerWorld Binary (*.pwb)|*.pwb';
+end;
+
+
+{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                        SimAuto Connect/Disconnect
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }
+
+function SimAutoConnect: ISimulatorAuto;
+begin
+    // Attempt to connect to the server
+    Screen.Cursor := crHourGlass;
+    try
+      Result := CoSimulatorAuto.Create;
+      ShowMessage('Automation server connection successful!');
+    except
+      on E : Exception do begin
+        ShowMessage('Connection failed via'+ E.ClassName+' error raised with message : '+E.Message);
+        Result := nil;
+      end;
+    end;
+    Screen.Cursor := crDefault;
+end;
+
+procedure SimAutoDisconnect(SimAutoObj: ISimulatorAuto);
+begin
+    // Re-initialize the server variable
+    SimAutoObj := nil;
+    ShowMessage('Disconnected from SimAuto!');
+end;
+
+{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                Functions relating to the SimAutoConnection ribbon group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }
+
+procedure TMainForm.ActionEditDatabaseExecute(Sender: TObject);
+var
+  DatabaseForm: TfrmDatabase;
+begin
+  DatabaseForm := TfrmDatabase.Create(Application);
+  DatabaseForm.Show;
+end;
+
+procedure TMainForm.ActionRawDataExecute(Sender: TObject);
+var
+  DatabaseForm: TRawDataForm;
+begin
+  DatabaseForm := TRawDataForm.Create(Application);
+  DatabaseForm.Show;
+end;
+
+procedure TMainForm.ActionOpenSimAutoCaseAccept(Sender: TObject);
+begin
+  // Grab the case name and display it
+  CurrCasePath := ActionOpenSimAutoCase.Dialog.FileName;
+  lblFileName.Caption := ExtractFileName(CurrCasePath);
+  // Open the desired SimAuto Case
+  Output := SimAuto.OpenCase(CurrCasePath);
+  if (string(Output[0]) <> '') then
+    ShowMessage('Error '+string(Output[0]))
+  else begin
+    ShowMessage('Case "'+ExtractFileName(CurrCasePath)+'"  opened.');
+  end;
+end;
+
+procedure TMainForm.ActionSimAutoConnectExecute(Sender: TObject);
+begin
+  SimAuto := SimAutoConnect;
+  if SimAuto <> nil then begin
+    // If succesfully connected, enable the disconnect button and
+    // disable the connect button
+    EnableActions;
+  end;
+end;
+
+procedure TMainForm.ActionSimAutoDisconnectExecute(Sender: TObject);
+var
+  Output: OleVariant;
+begin
+  Output:= SimAuto.CloseCase;
+  if (string(Output[0]) <> '') then
+    ShowMessage(string(Output[0]))
+  else begin
+    SimAutoDisconnect(SimAuto);
+    // Disable all relevant actions (reset the app)
+    DisableActions;
+  end;
+end;
+
+{ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                Functions relating to the SimAutoConnection ribbon group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ }
+
+end.
